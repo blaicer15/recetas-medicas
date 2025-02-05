@@ -6,10 +6,6 @@ import 'package:recetas_medicas/src/components/login.dart';
 class LoginView extends StatelessWidget {
   const LoginView({super.key});
 
-  static Route<void> route() {
-    return MaterialPageRoute<void>(builder: (_) => const LoginView());
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
