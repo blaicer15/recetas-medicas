@@ -38,16 +38,10 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
-        print(state.username.value);
-        print(state.password.value);
         await supabase.auth.signUp(
           email: state.username.value,
           password: state.password.value,
         );
-        // await _userRepository.logIn(
-        //   username: state.username.value,
-        //   password: state.password.value,
-        // );
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (_) {
         print(_);
