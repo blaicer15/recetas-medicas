@@ -8,7 +8,7 @@ Future<void> main() async {
     url: supabaseUrl,
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZxZXVsY2x0amNieW1haHV2dG1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzU1NzU5MDUsImV4cCI6MjA1MTE1MTkwNX0.mfo1uy2DCz-S5aOcgc4gf5yUBGND1mJM92GifgBq6Hs',
-        authOptions: const FlutterAuthClientOptions(
+    authOptions: const FlutterAuthClientOptions(
       authFlowType: AuthFlowType.pkce,
     ),
     realtimeClientOptions: const RealtimeClientOptions(
