@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:go_router/go_router.dart';
-import 'package:recetas_medicas/src/bloc/login_bloc.dart';
+import 'package:recetas_medicas/src/bloc/login/login_bloc.dart';
 
 class LoginComponent extends StatelessWidget {
   const LoginComponent({super.key});

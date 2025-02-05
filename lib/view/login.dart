@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:recetas_medicas/src/bloc/login_bloc.dart';
+import 'package:recetas_medicas/src/bloc/login/login_bloc.dart';
 import 'package:recetas_medicas/src/components/login.dart';
 
 class LoginView extends StatelessWidget {

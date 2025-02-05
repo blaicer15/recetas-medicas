@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:recetas_medicas/src/bloc/home/home_bloc.dart';
 
 class HomeView extends ConsumerWidget {
   const HomeView({super.key});
@@ -10,10 +12,17 @@ class HomeView extends ConsumerWidget {
       appBar: AppBar(
         title: const Text('Home'),
       ),
-      body: const Center(
-        child: Text('Home View'),
+      body: BlocProvider(
+        create: (context) => HomeBloc(),
+        child: const Center(
+          child: Text('Home View'),
+        ),
       ),
-      bottomNavigationBar: BottomNavigationBar(items: const [
+      bottomNavigationBar: BottomNavigationBar(onTap: (value) {
+        if (value ==0) {
+          
+        }
+      }, items: const [
         BottomNavigationBarItem(
           icon: Icon(Icons.list),
           label: 'Recetas',
