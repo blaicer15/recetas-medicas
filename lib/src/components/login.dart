@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:go_router/go_router.dart';
 import 'package:recetas_medicas/src/bloc/login_bloc.dart';
 
 class LoginComponent extends StatelessWidget {
@@ -8,16 +9,28 @@ class LoginComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<LoginBloc, LoginState>(listener: (context, state) => {
-if (state.status.isFailure) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(content: Text('Authentication Failure')),
-            )
-        }
-    },
-    child: Align(
+    return BlocListener<LoginBloc, LoginState>(
+      listener: (context, state) => {
+        if (state.status.isFailure)
+          {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(content: Text('La authentificacion fallo')),
+              )
+          },
+        if (state.status.isSuccess)
+          {
+            ScaffoldMessenger.of(context)
+              ..hideCurrentSnackBar()
+              ..showSnackBar(
+                const SnackBar(
+                    content: Text('La authentificacion fue exitosa')),
+              ),
+            context.goNamed("home")
+          }
+      },
+      child: Align(
         alignment: const Alignment(0, -1 / 3),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -29,48 +42,6 @@ if (state.status.isFailure) {
             _LoginButton(),
           ],
         ),
-      ),
-    );
-  }
-}
-
-
-class _UsernameInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final displayError = context.select(
-      (LoginBloc bloc) => bloc.state.username.displayError,
-    );
-
-    return TextField(
-      key: const Key('loginForm_usernameInput_textField'),
-      onChanged: (username) {
-        context.read<LoginBloc>().add(LoginUsernameChanged(username));
-      },
-      decoration: InputDecoration(
-        labelText: 'username',
-        errorText: displayError != null ? 'invalid username' : null,
-      ),
-    );
-  }
-}
-
-class _PasswordInput extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    final displayError = context.select(
-      (LoginBloc bloc) => bloc.state.password.displayError,
-    );
-
-    return TextField(
-      key: const Key('loginForm_passwordInput_textField'),
-      onChanged: (password) {
-        context.read<LoginBloc>().add(LoginPasswordChanged(password));
-      },
-      obscureText: true,
-      decoration: InputDecoration(
-        labelText: 'password',
-        errorText: displayError != null ? 'invalid password' : null,
       ),
     );
   }
@@ -93,6 +64,47 @@ class _LoginButton extends StatelessWidget {
           ? () => context.read<LoginBloc>().add(const LoginSubmitted())
           : null,
       child: const Text('Login'),
+    );
+  }
+}
+
+class _PasswordInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final displayError = context.select(
+      (LoginBloc bloc) => bloc.state.password.displayError,
+    );
+
+    return TextField(
+      key: const Key('loginForm_passwordInput_textField'),
+      onChanged: (password) {
+        context.read<LoginBloc>().add(LoginPasswordChanged(password));
+      },
+      obscureText: true,
+      decoration: InputDecoration(
+        labelText: 'Contraseña',
+        errorText: displayError != null ? 'invalid password' : null,
+      ),
+    );
+  }
+}
+
+class _UsernameInput extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final displayError = context.select(
+      (LoginBloc bloc) => bloc.state.username.displayError,
+    );
+
+    return TextField(
+      key: const Key('loginForm_usernameInput_textField'),
+      onChanged: (username) {
+        context.read<LoginBloc>().add(LoginUsernameChanged(username));
+      },
+      decoration: InputDecoration(
+        labelText: 'Correo electronico',
+        errorText: displayError != null ? 'Correo electonico invalido' : null,
+      ),
     );
   }
 }
