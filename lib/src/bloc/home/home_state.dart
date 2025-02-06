@@ -6,7 +6,7 @@ final class HomeState extends Equatable {
   const HomeState({this.tab = 0});
 
   @override
-  int get tabSelected => tab;
+  List<Object?> get props => [tab];
 
   HomeState copyWith({
     int? tab,

@@ -1,17 +1,20 @@
 part of 'home_bloc.dart';
 
-sealed class HomeEvent extends Equatable {
+sealed class HomeEvent implements Equatable {
   const HomeEvent();
 
   @override
-  int get tabSelected => 0;
-}
-
-final class HomeTabSelected extends HomeEvent {
-  final int tab;
-
-  const HomeTabSelected(this.tab);
+  List<Object?> get props => [];
 
   @override
-  int get tabSelected => tab;
+  bool get stringify => true;
+}
+
+final class HomeTabChanged extends HomeEvent {
+  final int tab;
+
+  const HomeTabChanged(this.tab);
+
+  @override
+  List<Object> get props => [tab];
 }
