@@ -6,7 +6,7 @@ import 'package:recetas/view/login.dart';
 final appRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/',
-    builder: (context, state) => const SplashView(),
+    builder: (context, state) => SplashView(),
   ),
   GoRoute(path: '/login', builder: (context, state) => const LoginView()),
   GoRoute(
