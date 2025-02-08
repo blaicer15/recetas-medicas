@@ -51,7 +51,7 @@ class _LoginButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isInProgressOrSuccess = context.select(
-          (LoginCubit bloc) => bloc.state.status.isInProgressOrSuccess,
+      (LoginCubit bloc) => bloc.state.status.isInProgressOrSuccess,
     );
 
     if (isInProgressOrSuccess) return const CircularProgressIndicator();
@@ -60,9 +60,8 @@ class _LoginButton extends StatelessWidget {
 
     return ElevatedButton(
       key: const Key('loginForm_continue_raisedButton'),
-      onPressed: isValid
-          ? () => {}
-          : null,
+      onPressed:
+          isValid ? () => context.read<LoginCubit>().onSubmitted() : null,
       child: const Text('Login'),
     );
   }
@@ -72,12 +71,13 @@ class _PasswordInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final displayError = context.select(
-          (LoginCubit bloc) => bloc.state.password.displayError,
+      (LoginCubit bloc) => bloc.state.password.displayError,
     );
 
     return TextField(
       key: const Key('loginForm_passwordInput_textField'),
       onChanged: (password) {
+        context.read<LoginCubit>().changePassword(password);
         // context.read<LoginCubit>().add(LoginPasswordChanged(password));
       },
       obscureText: true,
@@ -93,12 +93,13 @@ class _UsernameInput extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final displayError = context.select(
-          (LoginCubit bloc) => bloc.state.username.displayError,
+      (LoginCubit bloc) => bloc.state.username.displayError,
     );
 
     return TextField(
       key: const Key('loginForm_usernameInput_textField'),
       onChanged: (username) {
+        context.read<LoginCubit>().changeUsername(username);
         // context.read<LoginCubit>().add(LoginUsernameChanged(username));
       },
       decoration: InputDecoration(
