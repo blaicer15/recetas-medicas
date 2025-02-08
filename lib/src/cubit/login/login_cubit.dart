@@ -1,8 +1,8 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:logger/logger.dart';
-import 'package:recetas/src/model/user/username.dart';
 import 'package:recetas/src/model/user/password.dart';
+import 'package:recetas/src/model/user/username.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 part 'login_state.dart';
@@ -12,7 +12,12 @@ class LoginCubit extends Cubit<LoginState> {
 
   final supabase = Supabase.instance.client;
 
-  LoginCubit() : super(const LoginState(status: FormzSubmissionStatus.initial, username: Username.dirty(), password: Password.dirty(), isValid: false));
+  LoginCubit()
+      : super(const LoginState(
+            status: FormzSubmissionStatus.initial,
+            username: Username.dirty(),
+            password: Password.dirty(),
+            isValid: false));
 
   changePassword(String value) {
     final password = Password.dirty(value);
