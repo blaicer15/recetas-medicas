@@ -22,7 +22,7 @@ class BarNavigation extends StatelessWidget {
               label: 'Personas',
             ),
           ],
-          selectedIndex: 0,
+          selectedIndex: state.tab,
           onDestinationSelected: (value) =>
               context.read<NavigationBarCubit>().setTab(value),
         );
