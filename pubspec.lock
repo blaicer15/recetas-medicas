@@ -98,7 +98,7 @@ packages:
     source: hosted
     version: "1.0.8"
   equatable:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: equatable
       sha256: "567c64b3cb4cf82397aac55f4f0cbd3ca20d77c6c03bedbc4ceaddc08904aef7"
@@ -143,13 +143,21 @@ packages:
     source: sdk
     version: "0.0.0"
   flutter_bloc:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: flutter_bloc
       sha256: "153856bdaac302bbdc58a1d1403d50c40557254aa05eaeed40515d88a25a526b"
       url: "https://pub.dev"
     source: hosted
     version: "9.0.0"
+  flutter_dotenv:
+    dependency: "direct main"
+    description:
+      name: flutter_dotenv
+      sha256: b7c7be5cd9f6ef7a78429cabd2774d3c4af50e79cb2b7593e3d5d763ef95c61b
+      url: "https://pub.dev"
+    source: hosted
+    version: "5.2.1"
   flutter_lints:
     dependency: "direct dev"
     description:
@@ -169,7 +177,7 @@ packages:
     source: sdk
     version: "0.0.0"
   formz:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: formz
       sha256: a58eb48d84685b7ffafac1d143bf47d585bf54c7db89fe81c175dfd6e53201c7
@@ -185,7 +193,7 @@ packages:
     source: hosted
     version: "2.4.0"
   go_router:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: go_router
       sha256: "9b736a9fa879d8ad6df7932cbdcc58237c173ab004ef90d8377923d7ad731eaa"
@@ -550,7 +558,7 @@ packages:
     source: hosted
     version: "2.6.2"
   supabase_flutter:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: supabase_flutter
       sha256: ca8dfe3d4b109e7338cdf7778f3ec2c660a0178006876bfac343eb39b0f3d1e3
@@ -646,7 +654,7 @@ packages:
     source: hosted
     version: "3.1.4"
   uuid:
-    dependency: "direct dev"
+    dependency: "direct main"
     description:
       name: uuid
       sha256: a5be9ef6618a7ac1e964353ef476418026db906c4facdedaa299b7a2e71690ff
