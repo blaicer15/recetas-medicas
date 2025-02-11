@@ -1,11 +1,27 @@
 part of 'auth_cubit.dart';
 
-final class AuthState {
-  final bool isLogged;
+class AuthError extends AuthState {
+  final String message;
+  const AuthError(this.message);
+}
 
-  AuthState({required this.isLogged});
+class AuthInitial extends AuthState {
+  const AuthInitial();
+}
 
-  AuthState copyWith({bool? isLogged}) {
-    return AuthState(isLogged: isLogged ?? false);
-  }
+class AuthLoading extends AuthState {
+  const AuthLoading();
+}
+
+class AuthRecoveryState extends AuthState {
+  const AuthRecoveryState();
+}
+
+abstract class AuthState {
+  const AuthState();
+}
+
+class AuthSuccess extends AuthState {
+  final User user;
+  const AuthSuccess(this.user);
 }
