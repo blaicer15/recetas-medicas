@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:logger/logger.dart';
@@ -40,7 +41,10 @@ class LoginCubit extends Cubit<LoginState> {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
         await supabase.auth.signUp(
-            email: state.username.value, password: state.password.value);
+            emailRedirectTo:
+                kIsWeb ? null : "io.supabase.recetas://login-callback",
+            email: state.username.value,
+            password: state.password.value);
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {
         logger.e(e);
