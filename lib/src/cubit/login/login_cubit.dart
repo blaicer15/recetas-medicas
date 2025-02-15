@@ -9,7 +9,7 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 part 'login_state.dart';
 
 class LoginCubit extends Cubit<LoginState> {
-  static var logger = Logger();
+  final logger = Logger();
 
   final supabase = Supabase.instance.client;
 
