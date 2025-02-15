@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:recetas/router/main.route.dart';
 import 'package:recetas/src/cubit/auth/auth_cubit.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -30,7 +31,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
     return BlocProvider(
       create: (context) => AuthCubit(),
       child: MaterialApp.router(
@@ -40,6 +40,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
             colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
             useMaterial3: true),
+        localizationsDelegates: const [GlobalMaterialLocalizations.delegate],
+        supportedLocales: const [Locale('es'), Locale('fr')],
       ),
     );
   }
