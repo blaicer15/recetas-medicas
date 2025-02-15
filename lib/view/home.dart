@@ -47,7 +47,7 @@ class HomeView extends StatelessWidget {
                       context.push("/addRecipe");
                     }
                     if (state.tab == 1) {
-                      // context.push("/addPerson");
+                      context.push("/addPerson");
                     }
                   },
                   child: const Icon(Icons.add),

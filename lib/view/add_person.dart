@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:recetas/src/bloc/add_person/add_person_bloc.dart';
+import 'package:recetas/src/components/person/form.dart';
 
 class AddPerson extends StatelessWidget {
   const AddPerson({super.key});
@@ -6,51 +9,12 @@ class AddPerson extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: ListView(
-        children: [
-          ListTile(
-            title: const Text("Nombre(s)"),
-            subtitle: TextField(
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text("Apellido paterno"),
-            subtitle: TextField(
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text("Apellido materno"),
-            subtitle: TextField(
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text("Edad"),
-            subtitle: TextField(
-              keyboardType: TextInputType.number,
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text("Peso"),
-            subtitle: TextField(
-              maxLength: 5,
-              keyboardType: TextInputType.number,
-              onChanged: (value) {},
-            ),
-          ),
-          ListTile(
-            title: const Text("Estatura"),
-            subtitle: TextField(
-              maxLength: 5,
-              keyboardType: TextInputType.number,
-              onChanged: (value) {},
-            ),
-          ),
-          ElevatedButton(onPressed: () {}, child: const Text("Guardar"))
-        ],
+      appBar: AppBar(
+        title: const Text("Agregar persona"),
+      ),
+      body: BlocProvider(
+        create: (context) => AddPersonBloc(),
+        child: FormPerson(),
       ),
     );
   }

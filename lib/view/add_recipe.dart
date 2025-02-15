@@ -132,6 +132,7 @@ class AddRecipe extends StatelessWidget {
       ),
       trailing: InkWell(
         child: const Icon(Icons.vaccines),
+        onTap: () => context.go("/addMedicine"),
         onLongPress: () => ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Agregar medicamento")),
         ),
@@ -174,7 +175,7 @@ class AddRecipe extends StatelessWidget {
       ),
       trailing: InkWell(
         child: const Icon(Icons.plus_one),
-        onTap: () => context.go("/addUser"),
+        onTap: () => context.push("/addPerson"),
         onLongPress: () => ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Agregar una persona")),
         ),
