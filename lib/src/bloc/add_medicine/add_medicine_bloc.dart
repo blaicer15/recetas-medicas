@@ -48,11 +48,12 @@ class AddMedicineBloc extends Bloc<AddMedicineEvent, AddMedicineState> {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
-        await supabase.from("medicinas").insert({
-          "nombre": state.nombre,
-          "nombre_generico": state.nombreGenerico,
+        await supabase.from("medicines").insert({
+          "nombre": state.nombre.value,
+          "generic_name": state.nombreGenerico.value,
           "pediatrico": state.isPediatric
         });
+        emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {
         log.d(e);
         emit(state.copyWith(status: FormzSubmissionStatus.failure));
