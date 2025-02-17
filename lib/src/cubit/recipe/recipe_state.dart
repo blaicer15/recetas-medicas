@@ -1,25 +1,9 @@
 part of 'recipe_cubit.dart';
 
-class DoseIntervalChanged extends RecipeEvent {
-  final int doseInterval;
-  DoseIntervalChanged(this.doseInterval);
-}
-
-class LoadMedicines extends RecipeEvent {}
-
-class LoadUsers extends RecipeEvent {}
-
-class MedicineSelected extends RecipeEvent {
-  final int medicineId;
-  MedicineSelected(this.medicineId);
-}
-
 class RecipeError extends RecipeState {
   final String message;
   RecipeError(this.message);
 }
-
-abstract class RecipeEvent {}
 
 class RecipeInitial extends RecipeState {}
 
@@ -33,6 +17,7 @@ class RecipeLoaded extends RecipeState {
   final int? doseInterval;
   final DateTime? endDate;
   final List<DateTime> doses;
+  final bool savedSuccessfully;
 
   RecipeLoaded({
     required this.users,
@@ -44,6 +29,7 @@ class RecipeLoaded extends RecipeState {
     this.doseInterval,
     this.endDate,
     required this.doses,
+    this.savedSuccessfully = false,
   });
 
   RecipeLoaded copyWith({
@@ -56,6 +42,7 @@ class RecipeLoaded extends RecipeState {
     int? doseInterval,
     DateTime? endDate,
     List<DateTime>? doses,
+    bool? savedSuccessfully,
   }) {
     return RecipeLoaded(
       users: users ?? this.users,
@@ -67,26 +54,11 @@ class RecipeLoaded extends RecipeState {
       doseInterval: doseInterval ?? this.doseInterval,
       endDate: endDate ?? this.endDate,
       doses: doses ?? this.doses,
+      savedSuccessfully: savedSuccessfully ?? this.savedSuccessfully,
     );
   }
 }
 
 class RecipeLoading extends RecipeState {}
 
-// Definición de estados
 abstract class RecipeState {}
-
-class StartDateChanged extends RecipeEvent {
-  final DateTime startDate;
-  StartDateChanged(this.startDate);
-}
-
-class TreatmentDaysChanged extends RecipeEvent {
-  final int treatmentDays;
-  TreatmentDaysChanged(this.treatmentDays);
-}
-
-class UserSelected extends RecipeEvent {
-  final int userId;
-  UserSelected(this.userId);
-}
