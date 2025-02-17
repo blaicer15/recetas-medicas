@@ -1,14 +1,15 @@
 import 'package:go_router/go_router.dart';
-import 'package:recetas/view/Splash.dart';
+import 'package:recetas/view/add_medicine.dart';
 import 'package:recetas/view/add_person.dart';
 import 'package:recetas/view/add_recipe.dart';
 import 'package:recetas/view/home.dart';
 import 'package:recetas/view/login.dart';
+import 'package:recetas/view/splash.dart';
 
 final appRouter = GoRouter(initialLocation: '/', routes: [
   GoRoute(
     path: '/',
-    builder: (context, state) => SplashView(),
+    builder: (context, state) => const SplashView(),
   ),
   GoRoute(path: '/login', builder: (context, state) => const LoginView()),
   GoRoute(
@@ -23,4 +24,8 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     path: '/addRecipe',
     builder: (context, state) => const AddRecipe(),
   ),
+  GoRoute(
+    path: '/addMedicine',
+    builder: (context, state) => const AddMedicine(),
+  )
 ]);
