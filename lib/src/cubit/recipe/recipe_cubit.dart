@@ -12,22 +12,27 @@ class RecipeCubit extends Cubit<RecipeState> {
     loadData();
   }
 
-  void changeDoseInterval(int doseInterval) {
+  void addNewMedicine() {
     if (state is! RecipeLoaded) return;
-    emit((state as RecipeLoaded).copyWith(doseInterval: doseInterval));
-    _calculateEndDateAndDoses();
-  }
+    final currentState = state as RecipeLoaded;
 
-  void changeStartDate(DateTime startDate) {
-    if (state is! RecipeLoaded) return;
-    emit((state as RecipeLoaded).copyWith(startDate: startDate));
-    _calculateEndDateAndDoses();
-  }
+    final newMedicine = {
+      'medicina_id': null,
+      'fecha_inicio': null,
+      'dias_tratamiento': null,
+      'intervalo_horas': null,
+      'dosis': null,
+      'fechas_programadas': <DateTime>[],
+      'proxima_dosis': null,
+      'fecha_fin': null,
+    };
 
-  void changeTreatmentDays(int treatmentDays) {
-    if (state is! RecipeLoaded) return;
-    emit((state as RecipeLoaded).copyWith(treatmentDays: treatmentDays));
-    _calculateEndDateAndDoses();
+    final updatedMedicines = [
+      ...currentState.prescriptionMedicines,
+      newMedicine
+    ];
+    _log.d(updatedMedicines);
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
   }
 
   Future<void> loadData() async {
@@ -35,23 +40,56 @@ class RecipeCubit extends Cubit<RecipeState> {
     try {
       final user = supabase.auth.currentUser;
       if (user != null) {
-        final users = await supabase
+        // Obtener el ID de la persona responsable
+
+        final responsableData = await supabase
             .from('personas')
-            .select('id, nombre')
-            .eq("response_of", user.id);
+            .select('id')
+            .eq('user_id', user.id)
+            .maybeSingle();
 
-        final medicines =
-            await supabase.from('medicines').select('id, nombre, generic_name');
+        final medicines = await supabase
+            .from('medicinas')
+            .select('id, nombre, nombre_generico, miligramos, es_pediatrico');
+        if (responsableData != null) {
+          final responsableId = responsableData['id'];
 
-        emit(RecipeLoaded(
-          users: users,
-          medicines: medicines,
-          doses: [],
-        ));
+          // Obtener pacientes asociados al responsable
+          final patients = await supabase
+              .from('personas')
+              .select('id, nombre, apellido_paterno, apellido_materno')
+              .neq('responsable_id',
+                  responsableId); // Excluir al responsable de la lista
+
+          // Aquí puedes manejar los pacientes obtenidos
+          emit(RecipeLoaded(
+            patients: patients,
+            medicines: medicines,
+            prescriptionMedicines: [],
+          ));
+        } else {
+          emit(RecipeLoaded(
+            patients: [],
+            medicines: medicines,
+            prescriptionMedicines: [],
+          ));
+        }
       }
     } catch (e) {
+      _log.e(e.toString());
       emit(RecipeError(e.toString()));
     }
+  }
+
+  void removeMedicine(String medicineId) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+
+    final updatedMedicines = currentState.prescriptionMedicines
+        .where((med) => med['medicina_id'] != medicineId)
+        .toList();
+
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
   }
 
   Future<void> saveRecipe() async {
@@ -66,27 +104,39 @@ class RecipeCubit extends Cubit<RecipeState> {
     try {
       emit(RecipeLoading());
 
-      final recipe = {
-        'user_id': currentState.selectedUserId,
-        'medicine_id': currentState.selectedMedicineId,
-        'start_date': currentState.startDate!.toIso8601String(),
-        'end_date': currentState.endDate!.toIso8601String(),
-        'treatment_days': currentState.treatmentDays,
-        'dose_interval': currentState.doseInterval,
+      final user = supabase.auth.currentUser;
+      if (user == null) throw Exception('Usuario no autenticado');
+
+      // Obtener el ID del responsable
+      final responsableData = await supabase
+          .from('personas')
+          .select('id')
+          .eq('user_id', user.id)
+          .single();
+
+      // Crear la receta
+      final recipeData = {
+        'persona_id': currentState.selectedPatientId,
+        'responsable_id': responsableData['id'],
+        'notas': currentState.notes,
       };
 
-      await supabase.from('recipes').insert(recipe);
+      final recipeResponse =
+          await supabase.from('recetas').insert(recipeData).select().single();
 
-      // Insert doses
-      final doses = currentState.doses
-          .map((date) => {
-                'recipe_id': recipe['id'],
-                'scheduled_date': date.toIso8601String(),
-                'status': 'pending'
-              })
-          .toList();
+      // Insertar los medicamentos de la receta
+      for (final medicine in currentState.prescriptionMedicines) {
+        final medicineData = {
+          'receta_id': recipeResponse['id'],
+          'medicina_id': medicine['medicina_id'],
+          'dias_tratamiento': medicine['dias_tratamiento'],
+          'fecha_inicio': medicine['fecha_inicio'].toIso8601String(),
+          'intervalo_horas': medicine['intervalo_horas'],
+          'dosis': medicine['dosis'],
+        };
 
-      await supabase.from('doses').insert(doses);
+        await supabase.from('receta_medicamentos').insert(medicineData);
+      }
 
       emit(currentState.copyWith(savedSuccessfully: true));
     } catch (e) {
@@ -94,44 +144,149 @@ class RecipeCubit extends Cubit<RecipeState> {
     }
   }
 
-  void selectMedicine(String medicineId) {
+  void selectPatient(String patientId) {
     if (state is! RecipeLoaded) return;
-    emit((state as RecipeLoaded).copyWith(selectedMedicineId: medicineId));
+    emit((state as RecipeLoaded).copyWith(selectedPatientId: patientId));
   }
 
-  void selectUser(String userId) {
-    if (state is! RecipeLoaded) return;
-    emit((state as RecipeLoaded).copyWith(selectedUserId: userId));
-  }
-
-  void _calculateEndDateAndDoses() {
+  void setMedicineAlarm(String medicineId) {
     if (state is! RecipeLoaded) return;
     final currentState = state as RecipeLoaded;
-    if (currentState.startDate == null ||
-        currentState.treatmentDays == null ||
-        currentState.doseInterval == null) return;
 
-    final endDate = currentState.startDate!
-        .add(Duration(days: currentState.treatmentDays!));
-    final doses = <DateTime>[];
-    var currentDate = currentState.startDate!;
+    final medicine = currentState.prescriptionMedicines
+        .firstWhere((med) => med['medicina_id'] == medicineId);
+
+    _log.d('Setting alarm for medicine: ${medicine['medicina_id']}');
+    // Implementar lógica de alarmas aquí
+  }
+
+  void updateMedicineDosis(String medicineId, String dosis) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+
+    final updatedMedicines = currentState.prescriptionMedicines.map((med) {
+      if (med['medicina_id'] == medicineId) {
+        return {...med, 'dosis': dosis};
+      }
+      return med;
+    }).toList();
+
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
+  }
+
+  void updateMedicineId(String oldId, String newId) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+
+    final updatedMedicines = currentState.prescriptionMedicines.map((med) {
+      if (med['medicina_id'] == oldId) {
+        return {...med, 'medicina_id': newId};
+      }
+      return med;
+    }).toList();
+
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
+  }
+
+  void updateMedicineInterval(String medicineId, int interval) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+
+    final updatedMedicines = currentState.prescriptionMedicines.map((med) {
+      if (med['medicina_id'] == medicineId) {
+        return {...med, 'intervalo_horas': interval};
+      }
+      return med;
+    }).toList();
+
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
+    _calculateMedicineSchedule(medicineId);
+  }
+
+  void updateMedicineStartDate(String medicineId, DateTime startDate) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+
+    final updatedMedicines = currentState.prescriptionMedicines.map((med) {
+      if (med['medicina_id'] == medicineId) {
+        return {...med, 'fecha_inicio': startDate};
+      }
+      return med;
+    }).toList();
+
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
+    _calculateMedicineSchedule(medicineId);
+  }
+
+  void updateMedicineTreatmentDays(String medicineId, int days) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+
+    final updatedMedicines = currentState.prescriptionMedicines.map((med) {
+      if (med['medicina_id'] == medicineId) {
+        return {...med, 'dias_tratamiento': days};
+      }
+      return med;
+    }).toList();
+
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
+    _calculateMedicineSchedule(medicineId);
+  }
+
+  void updateNotes(String notes) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+    emit(currentState.copyWith(notes: notes));
+  }
+
+  void _calculateMedicineSchedule(String medicineId) {
+    if (state is! RecipeLoaded) return;
+    final currentState = state as RecipeLoaded;
+
+    final medicineIndex = currentState.prescriptionMedicines
+        .indexWhere((med) => med['medicina_id'] == medicineId);
+    if (medicineIndex == -1) return;
+
+    final medicine = currentState.prescriptionMedicines[medicineIndex];
+
+    if (medicine['fecha_inicio'] == null ||
+        medicine['dias_tratamiento'] == null ||
+        medicine['intervalo_horas'] == null) return;
+
+    final startDate = medicine['fecha_inicio'] as DateTime;
+    final treatmentDays = medicine['dias_tratamiento'] as int;
+    final intervalHours = medicine['intervalo_horas'] as int;
+
+    final endDate = startDate.add(Duration(days: treatmentDays));
+    final scheduledDates = <DateTime>[];
+    var currentDate = startDate;
 
     while (currentDate.isBefore(endDate)) {
-      doses.add(currentDate);
-      currentDate =
-          currentDate.add(Duration(hours: currentState.doseInterval!));
+      scheduledDates.add(currentDate);
+      currentDate = currentDate.add(Duration(hours: intervalHours));
     }
 
-    emit(currentState.copyWith(endDate: endDate, doses: doses));
+    final updatedMedicine = {
+      ...medicine,
+      'fecha_fin': endDate,
+      'fechas_programadas': scheduledDates,
+      'proxima_dosis': scheduledDates.firstWhere(
+        (date) => date.isAfter(DateTime.now()),
+        orElse: () => endDate,
+      ),
+    };
+
+    final updatedMedicines = [...currentState.prescriptionMedicines];
+    updatedMedicines[medicineIndex] = updatedMedicine;
+
+    emit(currentState.copyWith(prescriptionMedicines: updatedMedicines));
   }
 
   bool _validateRecipe(RecipeLoaded state) {
-    return state.selectedUserId != null &&
-        state.selectedMedicineId != null &&
-        state.startDate != null &&
-        state.treatmentDays != null &&
-        state.doseInterval != null &&
-        state.endDate != null &&
-        state.doses.isNotEmpty;
+    if (state.selectedPatientId == null ||
+        state.prescriptionMedicines.isEmpty) {
+      return false;
+    }
+    return false;
   }
 }

@@ -48,11 +48,38 @@ class AddMedicineBloc extends Bloc<AddMedicineEvent, AddMedicineState> {
     if (state.isValid) {
       emit(state.copyWith(status: FormzSubmissionStatus.inProgress));
       try {
-        await supabase.from("medicines").insert({
-          "nombre": state.nombre.value,
-          "generic_name": state.nombreGenerico.value,
-          "pediatrico": state.isPediatric
-        });
+        final userId = supabase
+            .auth.currentUser?.id; // Obtén el ID del usuario autenticado
+
+        if (userId != null) {
+          final response = await supabase
+              .from('persona_roles')
+              .select('role_id')
+              .eq('auth_id', userId)
+              .single();
+          log.i(response);
+          log.d({
+            "nombre": state.nombre.value,
+            "nombre_generico": state.nombreGenerico.value,
+            "pediatrico": state
+                .isPediatric, // Asegúrate de que el nombre de la columna sea correcto
+            "miligramos": 0,
+            "unidades": 0,
+            "created_by": userId // Establece el ID del usuario autenticado
+          });
+          await supabase.from("medicinas").insert({
+            "nombre": state.nombre.value,
+            "nombre_generico": state.nombreGenerico.value,
+            "pediatrico": state
+                .isPediatric, // Asegúrate de que el nombre de la columna sea correcto
+            "miligramos": 0,
+            "unidades": 0,
+            "created_by": userId // Establece el ID del usuario autenticado
+          });
+        } else {
+          // Maneja el caso en que el usuario no esté autenticado
+          print("El usuario no está autenticado.");
+        }
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {
         log.d(e);

@@ -29,9 +29,9 @@ class AddPersonBloc extends Bloc<AddPersonEvent, AddPersonState> {
   Future<void> _guardarPersona() async {
     await _supabase.from("personas").insert({
       "nombre": state.nombre.value,
-      "apePaterno": state.firstSurname.value,
-      "apeMaterno": state.secondSurname.value,
-      "birthdate": state.birthdate.value?.toIso8601String(),
+      "apellido_paterno": state.firstSurname.value,
+      "apellido_materno": state.secondSurname.value,
+      "fecha_nacimiento": state.birthdate.value?.toIso8601String(),
       "estatura": state.height.value,
       "peso": state.weight.value,
     });

@@ -23,7 +23,7 @@ class HomeView extends StatelessWidget {
               slivers: [
                 BlocBuilder<NavigationBarCubit, NavigationBarState>(
                     builder: (context, state) {
-                  log.d(state.tab);
+                  // log.d(state.tab);
                   switch (state.tab) {
                     case 0:
                       return const Recetas();
@@ -44,7 +44,7 @@ class HomeView extends StatelessWidget {
                 return FloatingActionButton(
                   onPressed: () {
                     if (state.tab == 0) {
-                      context.push("/addRecipe");
+                      context.push("/addPrescription");
                     }
                     if (state.tab == 1) {
                       context.push("/addPerson");

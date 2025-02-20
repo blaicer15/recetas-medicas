@@ -16,34 +16,37 @@ class MedicationBloc extends Bloc<MedicationEvent, MedicationState> {
     on<IsPediatricChanged>(_onIsPediatricChanged);
     on<DosageChanged>(_onDosageChanged);
     on<MedicationSubmitted>(_onSubmitted);
-    on<DescriptionChanged>((event, emit) {
-      final description = Description.dirty(event.description);
-      emit(state.copyWith(
-        description: description,
-        isValid: Formz.validate([
-          state.medicationName,
-          state.genericName,
-          state.dosage,
-          description,
-        ]),
-      ));
-    });
-    on<MedicationSubmitted>((event, emit) async {
-      emit(state.copyWith(isLoading: true));
-      try {
-        // Tu lógica de guardado actual
-        emit(state.copyWith(
-          status: FormzSubmissionStatus.success,
-          isLoading: false,
-        ));
-      } catch (e) {
-        emit(state.copyWith(
-          status: FormzSubmissionStatus.failure,
-          errorMessage: e.toString(),
-          isLoading: false,
-        ));
-      }
-    });
+    on<DescriptionChanged>(_onDescripcionChanged);
+  }
+
+// void _onSubmitted (event, emit) async {
+//     emit(state.copyWith(isLoading: true));
+//     try {
+//       // Tu lógica de guardado actual
+//       emit(state.copyWith(
+//         status: FormzSubmissionStatus.success,
+//         isLoading: false,
+//       ));
+//     } catch (e) {
+//       emit(state.copyWith(
+//         status: FormzSubmissionStatus.failure,
+//         errorMessage: e.toString(),
+//         isLoading: false,
+//       ));
+//     }
+//   }
+
+  void _onDescripcionChanged(event, emit) {
+    final description = Description.dirty(event.description);
+    emit(state.copyWith(
+      description: description,
+      isValid: Formz.validate([
+        state.medicationName,
+        state.genericName,
+        state.dosage,
+        description,
+      ]),
+    ));
   }
 
   void _onDosageChanged(

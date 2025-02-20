@@ -6,14 +6,9 @@ class AddMedicineComponent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text("Agregar medicina"),
-      ),
-      body: const SingleChildScrollView(
-        padding: EdgeInsets.all(16.0),
-        child: FormMedicine(),
-      ),
+    return const SingleChildScrollView(
+      padding: EdgeInsets.all(16.0),
+      child: FormMedicine(),
     );
   }
 }

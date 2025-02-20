@@ -1,4 +1,5 @@
 import 'package:go_router/go_router.dart';
+import 'package:recetas/view/add_medication.dart';
 import 'package:recetas/view/add_medicine.dart';
 import 'package:recetas/view/add_person.dart';
 import 'package:recetas/view/add_recipe.dart';
@@ -21,11 +22,15 @@ final appRouter = GoRouter(initialLocation: '/', routes: [
     builder: (context, state) => const AddPerson(),
   ),
   GoRoute(
-    path: '/addRecipe',
+    path: '/addPrescription',
     builder: (context, state) => const AddRecipe(),
   ),
   GoRoute(
     path: '/addMedicine',
     builder: (context, state) => const AddMedicine(),
+  ),
+  GoRoute(
+    path: "/addMedication",
+    builder: (context, state) => const MedicationScheduleForm(),
   )
 ]);
