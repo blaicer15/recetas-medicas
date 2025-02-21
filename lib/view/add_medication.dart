@@ -48,26 +48,43 @@ class MedicationScheduleFormView extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Form(
-                child: ListView(
-                  children: [
-                    const MedicationDropdown(),
-                    const SizedBox(height: 16),
-                    const IntervalField(),
-                    const SizedBox(height: 16),
-                    const DurationField(),
-                    const SizedBox(height: 16),
-                    const DateTimeSelector(),
-                    const SizedBox(height: 24),
-                    if (state.scheduledTimes.isNotEmpty)
-                      SchedulePreview(times: state.scheduledTimes),
-                    const SizedBox(height: 24),
-                    const SubmitButton(),
-                  ],
+            return Column(
+              children: [
+                Expanded(
+                  child: SingleChildScrollView(
+                    child: Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Form(
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.stretch,
+                          children: [
+                            const MedicationDropdown(),
+                            const SizedBox(height: 16),
+                            const IntervalField(),
+                            const SizedBox(height: 16),
+                            const DurationField(),
+                            const SizedBox(height: 16),
+                            const DateTimeSelector(),
+                            const SizedBox(height: 24),
+                            if (state.scheduledTimes.isNotEmpty)
+                              ConstrainedBox(
+                                constraints: BoxConstraints(
+                                  maxHeight: MediaQuery.of(context)
+                                          .size
+                                          .height *
+                                      0.4, // Altura máxima del 50% de la pantalla
+                                ),
+                                child: SchedulePreview(
+                                    times: state.scheduledTimes),
+                              ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 ),
-              ),
+                const SubmitButton(),
+              ],
             );
           },
         ),

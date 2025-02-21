@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:logger/logger.dart';
 import 'package:recetas/src/model/medication.dart';
 import 'package:recetas/src/model/medication/duration_inpuy.dart';
 import 'package:recetas/src/model/medication/interval_input.dart';
@@ -13,7 +14,8 @@ part 'medication_schedule_state.dart';
 class MedicationFormBloc
     extends Bloc<MedicationFormEvent, MedicationFormState> {
   final SupabaseClient supabase = Supabase.instance.client;
-  // final FlutterLocalNotificationsPlugin notifications;
+
+  final _log = Logger();
 
   MedicationFormBloc() : super(MedicationFormState()) {
     on<LoadMedicationList>(_onLoadMedicationList);
@@ -139,6 +141,7 @@ class MedicationFormBloc
     Emitter<MedicationFormState> emit,
   ) {
     final medication = MedicationInput.dirty(event.medication);
+    _log.d(Formz.validate([medication, state.interval, state.duration]));
     emit(state.copyWith(
       medication: medication,
       isValid: Formz.validate([medication, state.interval, state.duration]),

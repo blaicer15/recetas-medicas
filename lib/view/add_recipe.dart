@@ -32,9 +32,9 @@ class AddRecipe extends StatelessWidget {
                           children: [
                             _buildUserDropdown(context, state),
                             const SizedBox(height: 16),
-                            _buildMedicationsList(context, state),
-                            const SizedBox(height: 16),
                             _buildAddMedicationButton(context),
+                            const SizedBox(height: 16),
+                            _buildMedicationsList(context, state),
                           ],
                         ),
                       ),
@@ -242,7 +242,7 @@ class AddRecipe extends StatelessWidget {
         value: medication['medicineId'],
         items: state.medicines
             .map((medicine) => DropdownMenuItem<String>(
-                  value: medicine['id'] as String,
+                  value: (medicine['id']).toString(),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,

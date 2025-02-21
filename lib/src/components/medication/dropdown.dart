@@ -15,6 +15,7 @@ class MedicationDropdown extends StatelessWidget {
       builder: (context, state) {
         return ListTile(
           title: const Text('Medicamento'),
+          contentPadding: const EdgeInsets.all(0),
           subtitle: DropdownButtonFormField<String>(
             decoration: InputDecoration(
               errorText: state.medication.isNotValid

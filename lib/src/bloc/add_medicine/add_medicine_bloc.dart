@@ -78,7 +78,7 @@ class AddMedicineBloc extends Bloc<AddMedicineEvent, AddMedicineState> {
           });
         } else {
           // Maneja el caso en que el usuario no esté autenticado
-          print("El usuario no está autenticado.");
+          log.d("El usuario no está autenticado.");
         }
         emit(state.copyWith(status: FormzSubmissionStatus.success));
       } catch (e) {

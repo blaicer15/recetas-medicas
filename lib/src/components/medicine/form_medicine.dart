@@ -26,9 +26,11 @@ class FormMedicine extends StatelessWidget {
               const SizedBox(height: 16),
               ElevatedButton(
                 onPressed: state.isValid
-                    ? () => context
-                        .read<AddMedicineBloc>()
-                        .add(const SetSubmitted())
+                    ? () => {
+                          context
+                              .read<AddMedicineBloc>()
+                              .add(const SetSubmitted())
+                        }
                     : null,
                 child: const Text('Guardar'),
               ),

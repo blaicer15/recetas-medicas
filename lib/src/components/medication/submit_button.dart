@@ -16,7 +16,7 @@ class SubmitButton extends StatelessWidget {
                   context.read<MedicationFormBloc>().add(FormSubmitted());
                 }
               : null,
-          child: const Text('Programar Medicamento'),
+          child: Text('Programar Medicamento ${state.isValid}'),
         );
       },
     );

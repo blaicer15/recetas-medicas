@@ -50,7 +50,7 @@ class RecipeCubit extends Cubit<RecipeState> {
 
         final medicines = await supabase
             .from('medicinas')
-            .select('id, nombre, nombre_generico, miligramos, es_pediatrico');
+            .select('id, nombre, nombre_generico, miligramos, pediatrico');
         if (responsableData != null) {
           final responsableId = responsableData['id'];
 
@@ -70,7 +70,7 @@ class RecipeCubit extends Cubit<RecipeState> {
         } else {
           emit(RecipeLoaded(
             patients: [],
-            medicines: medicines,
+            medicines: [],
             prescriptionMedicines: [],
           ));
         }
